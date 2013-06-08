@@ -31,13 +31,28 @@
         if($client->getAccessToken()){
                 try{
                         echo "now";
-                        
+                        /*とりあえずファイル追加*/
+                        $file = new Google_DriveFile();
+                        $file->setTitle('test.txt');
+                        $file->setDescription('testFile');
+                        $file->setMimeType('text/plain');
+                        $parentId = 'root';
+                        $parent = new Google_ParentReference();
+                        $parent->setId($parentId);
+
+                        $file->setParents(array($parent));
+
+                        $date = "test";
+                        $createdFile = $service->file->Insert($file, array(
+                            'data' => $data,
+                            'minType' => 'text/plain',
+                        ));
                 }catch(Google_Exception $e){
                         echo $e->getMessage();
                 }
         }else{
                 $authUrl = $client->createAuthUrl();
-                echo '<a href="'.$authUrl.'">繧｢繝励Μ繧ｱ繝ｼ繧ｷ繝ｧ繝ｳ縺ｮ繧｢繧ｯ繧ｻ繧ｹ繧定ｨｱ蜿ｯ縺励※縺上□縺輔＞<a>';
+                echo '<a href="'.$authUrl.'">認可してください<a>';
         }
 
 ?>
