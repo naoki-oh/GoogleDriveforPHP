@@ -11,12 +11,9 @@ $client = new Google_Client();
 $client->setClientId('59507635988-l3a65l3kn463bf76vnikprdeh1u9hnh3.apps.googleusercontent.com');
 //clientsecret
 $client->setClientSecret('FXExfhbfx8sEAMJfSAbgxpHf');
-$client->setRedirectUri('http://kfes.jp/php/');
+$client->setRedirectUri('http://kfes.jp/php/');//参考サイト通りだとうまくいかない
 
 $service = new Google_DriveService($client);
-
-//
-//
 if(isset($_GET['code'])){
     $client->authenticate();
     $_SESSION['token'] = $client->getAccessToken();
@@ -47,11 +44,15 @@ if($client->getAccessToken()){
 
         // ファイルデータ
         // 今回はテキストとしてなのでただの文字列
-        $data = "テストファイルです。\n改行はどうなんでしょう？";
+        // xmlの中身を用意
+        $xmlData = array();
+        $xmlData[0] = array(
+            'title' => 'ohkibi',
+            'url' => 'http://kfes.jp',
+            'description' => 'test');
 
-        // ファイル追加, 追加したファイル情報がオブジェクトとして返ります
         $createdFile = $service->files->insert($file, array(
-            'data' => $data,
+            'data' => createXML($xmlData),
             'mimeType' => 'text/plain',
         ));
     }catch(Google_Exception $e){
@@ -62,4 +63,22 @@ if($client->getAccessToken()){
     echo '<a href="'.$authUrl.'">認可してください<a>';
 }
 
+function createXML($xmlArray){
+    //xmlのひな形をつくる
+    $xmlString = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xmlString .= "<list>" . "\n";
+    foreach($xmlArray as $value){
+        $xmlString .= "<item>";
+        $xmlString .= "<title>".$value['title']."</title>";
+        $xmlString .= "<url>".$value['url']."</url>";
+        $xmlString .= "<description>".$value['description']."</description>";
+        $xmlString .= "</item>" . "\n";
+    }
+    $xmlString .= "</list>" . "\n";
+    return $xmlString;
+}
+
+
 ?>
+
+
