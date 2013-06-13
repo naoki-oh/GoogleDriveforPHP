@@ -13,7 +13,7 @@ $client->setClientId('59507635988-l3a65l3kn463bf76vnikprdeh1u9hnh3.apps.googleus
 //clientsecret
 $client->setClientSecret('FXExfhbfx8sEAMJfSAbgxpHf');
 //redirectUri
-$client->setRedirectUri('http://kfes.jp/php/');//QlƒTƒCƒg’Ê‚è‚¾‚Æ‚¤‚Ü‚­‚¢‚©‚È‚¢
+$client->setRedirectUri('http://kfes.jp/php/');//å‚è€ƒã‚µã‚¤ãƒˆé€šã‚Šã ã¨ã†ã¾ãã„ã‹ãªã„
 
 $service = new Google_DriveService($client);
 if(isset($_GET['code'])){
@@ -29,45 +29,51 @@ if(isset($_SESSION['token'])){
 
 if($client->getAccessToken()){
         try{
-                // ’Ç‰Á‚µ‚½‚¢ƒtƒ@ƒCƒ‹ƒIƒuƒWƒFƒNƒg‚ğì¬
+                // è¿½åŠ ã—ãŸã„ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆ
                 $file = new Google_DriveFile();
                 $file->setTitle('test.xml');
-                $file->setDescription('ƒeƒXƒgƒtƒ@ƒCƒ‹‚Å‚·‚æI');
+                $file->setDescription('ãƒ†ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã§ã™ã‚ˆï¼');
                 $file->setMimeType('application/xml');
 
-                // e‚Æ‚µ‚½‚¢ƒtƒHƒ‹ƒ_‚Ì ID
+                // è¦ªã¨ã—ãŸã„ãƒ•ã‚©ãƒ«ãƒ€ã® ID
                 $parentId = 'root';
-                // eƒIƒuƒWƒFƒNƒg
+                // è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
                 $parent = new Google_ParentReference();
                 $parent->setId($parentId);
 
-                // ƒtƒ@ƒCƒ‹‚Ée‚ğƒZƒbƒg
+                // ãƒ•ã‚¡ã‚¤ãƒ«ã«è¦ªã‚’ã‚»ãƒƒãƒˆ
                 $file->setParents(array($parent));
 
-                // ƒtƒ@ƒCƒ‹ƒf[ƒ^
-                // ¡‰ñ‚ÍƒeƒLƒXƒg‚Æ‚µ‚Ä‚È‚Ì‚Å‚½‚¾‚Ì•¶š—ñ
-                // xml‚Ì’†g‚ğ—pˆÓ
-                $xml = new XML();
+                // ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ãƒ¼ã‚¿
+                // ä»Šå›ã¯ãƒ†ã‚­ã‚¹ãƒˆã¨ã—ã¦ãªã®ã§ãŸã ã®æ–‡å­—åˆ—
+                // xmlã®ä¸­èº«ã‚’ç”¨æ„
+                $xmlElement = array('name', 'age');
+		$xml = new XML($xmlElement);
                 $xmlData = array();
                 $xmlData[0] = array(
-                        'title' => 'ohkibi',
-                        'url' => 'http://kfes.jp',
-                        'description' => 'test');
-
+                        'name' => 'naoki',
+			'age' => '19');
+		$xmlData[1] = array(
+			'name' => 'matsuo',
+			'age' => '16'
+		);
+		
+		//echo createXML(array('title' => 'aaa', 'url' => 'aaa', 'description' => 'de'));
+			    
                 $createdFile = $service->files->insert($file, array(
-                        'data' => createXML($xmlData),
-                        'mimeType' => 'text/plain',
+                        'data' => $xml->outputXML($xmlData),
+                        'mimeType' => 'application/xml',
                 ));
         }catch(Google_Exception $e){
                 echo $e->getMessage();
         }
 }else{
         $authUrl = $client->createAuthUrl();
-        echo '<a href="'.$authUrl.'">”F‰Â‚µ‚Ä‚­‚¾‚³‚¢<a>';
+        echo '<a href="'.$authUrl.'">èªå¯ã—ã¦ãã ã•ã„<a>';
 }
 
 function createXML($xmlArray){
-        //xml‚Ì‚Ğ‚ÈŒ`‚ğ‚Â‚­‚é
+        //xmlã®ã²ãªå½¢ã‚’ã¤ãã‚‹
         $xmlString = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xmlString .= "<list>" . "\n";
         foreach($xmlArray as $value){
