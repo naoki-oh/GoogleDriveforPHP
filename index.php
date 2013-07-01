@@ -2,6 +2,7 @@
 require('./google-api-php-client/src/Google_Client.php');
 require('./google-api-php-client/src/contrib/Google_DriveService.php');
 require_once './xml.php';
+require_once './GoogleDrive.php';
 
 //session start
 session_start();
@@ -48,22 +49,23 @@ if($client->getAccessToken()){
                 // 今回はテキストとしてなのでただの文字列
                 // xmlの中身を用意
                 $xmlElement = array('name', 'age');
-		$xml = new XML($xmlElement);
+                $xml = new XML($xmlElement);
                 $xmlData = array();
                 $xmlData[0] = array(
                         'name' => 'naoki',
-			'age' => '19');
-		$xmlData[1] = array(
-			'name' => 'matsuo',
-			'age' => '16'
-		);
-		
-		//echo createXML(array('title' => 'aaa', 'url' => 'aaa', 'description' => 'de'));
-			    
+                        'age' => '19');
+                $xmlData[1] = array(
+                        'name' => 'matsuo',
+                        'age' => '16'
+                );
+
+                //echo createXML(array('title' => 'aaa', 'url' => 'aaa', 'description' => 'de'));
+
                 $createdFile = $service->files->insert($file, array(
                         'data' => $xml->outputXML($xmlData),
                         'mimeType' => 'application/xml',
                 ));
+                $xml->inputXML();
         }catch(Google_Exception $e){
                 echo $e->getMessage();
         }
